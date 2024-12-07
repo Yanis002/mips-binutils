@@ -21,6 +21,7 @@ ARG GNU_TRIPLE
 RUN mkdir /gcc-host && \
     tar -xf /gcc-${GCC_VERSION}.tar.xz -C /gcc-host --strip-components=1 && \
     cd /gcc-host && \
+    ./contrib/download_prerequisites && \
     ./configure --target=${GNU_TRIPLE} --prefix=/usr/local \
     --disable-nls --disable-shared --disable-gprofng --disable-ld --disable-gold && \
     make -j$(nproc) && \
@@ -31,7 +32,10 @@ ARG ZIG_TRIPLE
 COPY *.patch /
 RUN mkdir /gcc && \
     tar -xf /gcc-${GCC_VERSION}.tar.xz -C /gcc --strip-components=1 && \
-    cd /gcc && for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
+    cd /gcc && \
+    # uncomment if .patch files are used
+    # for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
+    ./contrib/download_prerequisites && \
     CC="zig cc -target ${ZIG_TRIPLE}" \
     ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target \
     --disable-nls --disable-shared --disable-gprof --without-zstd && \
