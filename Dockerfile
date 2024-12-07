@@ -3,7 +3,7 @@ ARG ALPINE_VERSION=3.19.1
 FROM alpine:${ALPINE_VERSION} AS build
 
 # Install dependencies
-RUN apk add --no-cache binutils file gcc gcc-multilib g++ make musl-dev patch
+RUN apk add --no-cache build-base musl-dev
 
 # Install zig
 ARG ZIG_VERSION=0.11.0
