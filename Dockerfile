@@ -12,26 +12,26 @@ RUN mkdir /zig && \
     tar -xJ -C /zig --strip-components=1
 ENV PATH="/zig:$PATH"
 
-# Download binutils
-ARG BINUTILS_VERSION=2.42
-RUN wget -q https://ftp.gnu.org/gnu/binutils/binutils-${BINUTILS_VERSION}.tar.xz
+# Download gcc
+ARG GCC_VERSION=14.2.0
+RUN wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz
 
-# Build host binutils
+# Build host gcc
 ARG GNU_TRIPLE
-RUN mkdir /binutils-host && \
-    tar -xf /binutils-${BINUTILS_VERSION}.tar.xz -C /binutils-host --strip-components=1 && \
-    cd /binutils-host && \
+RUN mkdir /gcc-host && \
+    tar -xf /gcc-${GCC_VERSION}.tar.xz -C /gcc-host --strip-components=1 && \
+    cd /gcc-host && \
     ./configure --target=${GNU_TRIPLE} --prefix=/usr/local \
     --disable-nls --disable-shared --disable-gprofng --disable-ld --disable-gold && \
     make -j$(nproc) && \
     make install-strip
 
-# Build target binutils
+# Build target gcc
 ARG ZIG_TRIPLE
 COPY *.patch /
-RUN mkdir /binutils && \
-    tar -xf /binutils-${BINUTILS_VERSION}.tar.xz -C /binutils --strip-components=1 && \
-    cd /binutils && for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
+RUN mkdir /gcc && \
+    tar -xf /gcc-${GCC_VERSION}.tar.xz -C /gcc --strip-components=1 && \
+    cd /gcc && for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
     CC="zig cc -target ${ZIG_TRIPLE}" \
     ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target \
     --disable-nls --disable-shared --disable-gprof --without-zstd && \
