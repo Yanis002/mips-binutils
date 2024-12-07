@@ -8,7 +8,7 @@ cd source
 #   patch -N -p1 -i "$patch"
 # done
 ./contrib/download_prerequisites
-./configure --target=mips-linux-gnu --prefix="$PREFIX" --disable-nls --disable-shared --disable-gprof --without-zstd
+./configure --target=mips-linux-gnu --prefix="$PREFIX" --disable-nls --disable-shared --disable-gprof --without-zstd --disable-multilib
 make -j$(nproc) configure-host
 make -j$(nproc)
 make install-strip

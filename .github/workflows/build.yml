@@ -16,15 +16,19 @@ jobs:
           - name: x86_64
             gnu: x86_64-linux-musl
             zig: x86_64-linux-musl
+            multilib: --disable-multilib
           - name: i686
             gnu: i686-linux-musl
             zig: x86-linux-musl
+            multilib: ""
           - name: armv7l
             gnu: arm-linux-musleabihf
             zig: arm-linux-musleabihf
+            multilib: ""
           - name: aarch64
             gnu: aarch64-linux-musl
             zig: aarch64-linux-musl
+            multilib: --disable-multilib
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -35,6 +39,7 @@ jobs:
           docker build --target export --output build . 
           --build-arg GNU_TRIPLE=${{ matrix.gnu }}
           --build-arg ZIG_TRIPLE=${{ matrix.zig }}
+          --build-arg MULTILIB=${{ matrix.multilib }}
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:

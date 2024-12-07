@@ -16,13 +16,15 @@ ENV PATH="/zig:$PATH"
 ARG GCC_VERSION=14.2.0
 RUN wget -q https://ftp.gnu.org/gnu/gcc/gcc-${GCC_VERSION}/gcc-${GCC_VERSION}.tar.xz
 
+ARG MULTILIB
+
 # Build host gcc
 ARG GNU_TRIPLE
 RUN mkdir /gcc-host && \
     tar -xf /gcc-${GCC_VERSION}.tar.xz -C /gcc-host --strip-components=1 && \
     cd /gcc-host && \
     ./contrib/download_prerequisites && \
-    ./configure --target=${GNU_TRIPLE} --prefix=/usr/local \
+    ./configure --target=${GNU_TRIPLE} --prefix=/usr/local ${MULTILIB} \
     --disable-nls --disable-shared --disable-gprofng --disable-ld --disable-gold && \
     make -j$(nproc) && \
     make install-strip
@@ -37,7 +39,7 @@ RUN mkdir /gcc && \
     # for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
     ./contrib/download_prerequisites && \
     CC="zig cc -target ${ZIG_TRIPLE}" \
-    ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target \
+    ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target ${MULTILIB} \
     --disable-nls --disable-shared --disable-gprof --without-zstd && \
     make -j$(nproc) && \
     make install-strip

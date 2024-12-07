@@ -9,7 +9,7 @@ cd source
 # done
 export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.11"
 ./contrib/download_prerequisites
-./configure --target=mips-linux-gnu --prefix="$PREFIX" --disable-nls --disable-shared --disable-gprof --without-zstd
+./configure --target=mips-linux-gnu --prefix="$PREFIX" --disable-nls --disable-shared --disable-gprof --without-zstd --disable-multilib
 make -j$(nproc) configure-host
 make -j$(nproc)
 make install-strip
