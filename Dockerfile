@@ -22,7 +22,6 @@ RUN mkdir /binutils-host && \
     tar -xf /binutils-${BINUTILS_VERSION}.tar.xz -C /binutils-host --strip-components=1 && \
     cd /binutils-host && \
     ./configure --target=${GNU_TRIPLE} --prefix=/usr/local \
-    --disable-nls --disable-shared --disable-gprofng --disable-ld --disable-gold && \
     make -j$(nproc) && \
     make install-strip
 
@@ -33,8 +32,7 @@ RUN mkdir /binutils && \
     tar -xf /binutils-${BINUTILS_VERSION}.tar.xz -C /binutils --strip-components=1 && \
     cd /binutils && for patch in ../*.patch; do patch -N -p1 -i $patch; done && \
     CC="zig cc -target ${ZIG_TRIPLE}" \
-    ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target \
-    --disable-nls --disable-shared --disable-gprof --without-zstd && \
+    ./configure --host=${GNU_TRIPLE} --target=mips-linux-gnu --prefix=/target && \
     make -j$(nproc) && \
     make install-strip
 
